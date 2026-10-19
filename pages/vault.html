@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Vault - Offline Password Manager</title>
+  <link rel="stylesheet" href="../styles/theme.css">
+  <link rel="stylesheet" href="../styles/vault.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Header -->
+    <header class="vault-navbar">
+      <div class="vault-container nav-content">
+        <div class="brand-group">
+          <div class="vault-brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <div>
+            <div class="brand-title-wrap">
+              <h1 class="brand-name">Secure Vault</h1>
+              <span class="badge-status">Chromium Extension</span>
+            </div>
+            <p class="brand-sub">Offline personal credentials manager</p>
+          </div>
+        </div>
+
+        <!-- Global Search Bar (Stage 4) -->
+        <div id="navSearchContainer" class="nav-search-container">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input id="vaultSearchInput" type="search" class="search-input" placeholder="Search accounts..." aria-label="Search accounts" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Nav Controls -->
+        <div class="nav-actions">
+          <button id="vaultThemeToggleBtn" class="btn-icon" aria-label="Toggle theme" title="Toggle dark/light mode">
+            <svg id="vaultThemeIconDark" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg id="vaultThemeIconLight" class="icon-svg hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+
+          <button id="vaultOpenGeneratorBtn" class="btn btn-secondary btn-sm" aria-label="Open Password Generator" title="Generate secure random password">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"></circle>
+              <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"></circle>
+              <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"></circle>
+              <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"></circle>
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+            </svg>
+            <span>Password Generator</span>
+          </button>
+
+          <button id="vaultAddAccountBtn" class="btn btn-primary btn-sm" type="button">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>+ Add Account</span>
+          </button>
+
+          <button id="lockVaultBtn" class="btn btn-secondary btn-sm" aria-label="Lock vault now">
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span>Lock</span>
+          </button>
+
+          <button id="vaultOpenChangePassBtn" class="btn btn-secondary btn-sm">
+            <span>Change Password</span>
+          </button>
+
+          <button id="vaultOpenSettingsBtn" class="btn btn-secondary btn-sm" aria-label="Security and Backup Settings" title="Security & Settings">
+            <span>Settings</span>
+          </button>
+
+          <button id="vaultOpenResetBtn" class="btn btn-secondary btn-sm btn-link-danger">
+            <span>Reset Vault</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Notification Toast (Compact, fixed top-right, non-layout-shifting) -->
+    <div id="vaultNotification" class="vault-toast hidden" role="status" aria-live="polite" aria-atomic="true">
+      <div id="vaultNotificationIcon" class="vault-toast-icon">
+        <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <span id="vaultNotificationText" class="vault-toast-text"></span>
+      <button id="vaultNotificationCloseBtn" class="vault-toast-close" type="button" aria-label="Dismiss notification">
+        <svg class="toast-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="vault-container main-content">
+      <!-- Vault Status Banner -->
+      <section class="overview-banner">
+        <div class="overview-info">
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            <span>Offline Local Vault</span>
+          </div>
+          <h2 class="overview-title">Saved Accounts</h2>
+          <p class="overview-subtitle">
+            All account credentials are encrypted with AES-256-GCM and stored only on this device.
+          </p>
+        </div>
+
+        <div class="overview-controls">
+          <span id="accountCountLabel" class="account-count" style="font-size:13px;font-weight:600;color:var(--text-secondary);">0 accounts</span>
+        </div>
+      </section>
+
+      <!-- Category Filter Chips & Sort Toolbar (Stage 4) -->
+      <section id="vaultFilterSortToolbar" class="categories-toolbar hidden" aria-label="Category filters and sorting">
+        <div class="chip-container" id="categoryChipsGroup" role="tablist" aria-label="Category filters">
+          <button type="button" class="chip active" data-category="All" role="tab" aria-selected="true">All</button>
+          <button type="button" class="chip" data-category="Gmail" role="tab" aria-selected="false">Gmail</button>
+          <button type="button" class="chip" data-category="Social" role="tab" aria-selected="false">Social</button>
+          <button type="button" class="chip" data-category="Work" role="tab" aria-selected="false">Work</button>
+          <button type="button" class="chip" data-category="Other" role="tab" aria-selected="false">Other</button>
+        </div>
+
+        <div class="sort-control-group">
+          <label for="vaultSortSelect" class="sort-label">Sort:</label>
+          <select id="vaultSortSelect" class="sort-select" aria-label="Sort accounts">
+            <option value="recently-updated" selected>Recently Updated</option>
+            <option value="recently-added">Recently Added</option>
+            <option value="name-asc">Name A–Z</option>
+            <option value="name-desc">Name Z–A</option>
+            <option value="category-asc">Category A–Z</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- VIEW A: EMPTY STATE (0 accounts in entire vault) -->
+      <section id="vaultEmptyState" class="empty-state-card" aria-label="Empty vault state">
+        <div class="empty-icon-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <rect x="8" y="11" width="8" height="6" rx="1.5" fill="currentColor" fill-opacity="0.2"/>
+            <path d="M9.5 11V9a2.5 2.5 0 0 1 5 0v2"/>
+          </svg>
+        </div>
+        <h3 class="empty-heading">No accounts yet</h3>
+        <p class="empty-subtext">
+          Add your first account to securely manage your credentials.
+        </p>
+        <button id="emptyAddAccountBtn" class="btn btn-primary" type="button">
+          <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          + Add Account
+        </button>
+      </section>
+
+      <!-- VIEW B: NO SEARCH / FILTER MATCHES (Accounts exist, but none match filter/search) -->
+      <section id="vaultSearchEmptyState" class="empty-state-card hidden" aria-label="No matching accounts">
+        <div class="empty-icon-shield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <line x1="8" y1="11" x2="14" y2="11"/>
+          </svg>
+        </div>
+        <h3 class="empty-heading">No matching accounts</h3>
+        <p class="empty-subtext">
+          Try another search term.
+        </p>
+      </section>
+
+      <!-- VIEW C: REAL ACCOUNTS LIST (Populated dynamically) -->
+      <section id="vaultAccountsSection" class="hidden" aria-label="Accounts list">
+        <div id="accountsListContainer" class="accounts-grid"></div>
+      </section>
+    </main>
+
+    <!-- ============================================== -->
+    <!-- AUTH OVERLAY (First-time setup / Unlock / Recovery) -->
+    <!-- ============================================== -->
+    <div id="vaultAuthOverlay" class="locked-overlay hidden" role="dialog" aria-modal="true">
+      <!-- State 1: Locked Vault Screen -->
+      <div id="vaultLockedCard" class="locked-card">
+        <div class="locked-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <h2 class="locked-card-title">Your vault is locked</h2>
+        <p class="locked-card-desc">Your credentials stay on this device</p>
+
+        <form id="vaultPageUnlockForm" style="width:100%;margin-bottom:16px;">
+          <div class="input-with-toggle" style="margin-bottom:12px;">
+            <input id="vaultPageUnlockPassword" type="password" class="form-input" placeholder="Enter Master Password" autocomplete="off" data-lpignore="true" data-form-type="other" required>
+            <button type="button" class="input-toggle-btn" data-target="vaultPageUnlockPassword" aria-label="Toggle password visibility">
+              <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <button id="vaultPageUnlockBtn" class="btn btn-primary btn-block" type="submit">
+            Unlock
+          </button>
+        </form>
+
+        <div style="font-size:12px;display:flex;flex-direction:column;gap:6px;">
+          <div>
+            Forgot Master Password?
+            <button id="vaultPageGotoRecoverBtn" class="btn-link" type="button">Use Recovery Key</button>
+          </div>
+          <div>
+            Have an encrypted backup?
+            <button id="vaultLockedRestoreBtn" class="btn-link" type="button">Restore From Backup</button>
+          </div>
+          <div>
+            <button id="vaultPageGotoResetBtn" class="btn-link btn-link-danger" type="button">Reset Vault</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- State 2: First-Time Setup Screen -->
+      <div id="vaultSetupCard" class="locked-card hidden" style="max-width:400px;">
+        <div class="locked-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h2 class="locked-card-title">Create Master Password</h2>
+        <p class="locked-card-desc">Protect your personal offline vault with a strong password.</p>
+
+        <form id="vaultPageSetupForm" style="width:100%;display:flex;flex-direction:column;gap:12px;text-align:left;">
+          <div class="form-group">
+            <label class="form-label" for="vaultPageSetupPassword">Master Password</label>
+            <div class="input-with-toggle">
+              <input id="vaultPageSetupPassword" type="password" class="form-input" placeholder="At least 4 characters" autocomplete="new-password" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="vaultPageSetupPassword" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <span class="form-hint">At least 4 characters (12+ recommended)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="vaultPageSetupConfirm">Confirm Password</label>
+            <div class="input-with-toggle">
+              <input id="vaultPageSetupConfirm" type="password" class="form-input" placeholder="Re-enter password" autocomplete="new-password" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="vaultPageSetupConfirm" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="warning-callout" style="font-size:11px;">
+            Your Master Password cannot be recovered. If you forget your Master Password, use your Recovery Key.
+          </div>
+
+          <button id="vaultPageCreateBtn" class="btn btn-primary btn-block" style="margin-top:6px;" type="submit">
+            Create Secure Vault
+          </button>
+        </form>
+
+        <div style="font-size:12px;text-align:center;margin-top:10px;">
+          Already have an encrypted backup?
+          <button id="vaultSetupRestoreBtn" class="btn-link" type="button">Restore From Backup</button>
+        </div>
+      </div>
+
+      <!-- State 3: Recovery Key Display Screen -->
+      <div id="vaultRecoveryDisplayCard" class="locked-card hidden" style="max-width:440px;">
+        <h2 class="locked-card-title text-warning">SAVE YOUR RECOVERY KEY</h2>
+        <p class="locked-card-desc">This Recovery Key can unlock your vault if you forget your Master Password.</p>
+
+        <pre id="vaultPageRecoveryKeyText" class="recovery-key-box" style="width:100%;margin:12px 0;"></pre>
+
+        <div style="display:flex;gap:8px;width:100%;margin-bottom:12px;">
+          <button id="vaultPageCopyRecoveryBtn" class="btn btn-secondary btn-sm" style="flex:1;" type="button">
+            Copy Key
+          </button>
+          <button id="vaultPageDownloadRecoveryBtn" class="btn btn-secondary btn-sm" style="flex:1;" type="button">
+            Download Key (.txt)
+          </button>
+        </div>
+
+        <div class="danger-callout" style="font-size:11.5px;margin-bottom:16px;">
+          Anyone who has your Recovery Key may be able to access your vault. Store it securely offline. Secure Vault does NOT store this key.
+        </div>
+
+        <button id="vaultPageConfirmSavedRecoveryBtn" class="btn btn-primary btn-block" type="button">
+          I've Saved My Recovery Key
+        </button>
+      </div>
+
+      <!-- State 4: Recovery Key Input Screen -->
+      <div id="vaultRecoveryInputCard" class="locked-card hidden" style="max-width:420px;">
+        <h2 class="locked-card-title">Recover Vault</h2>
+        <p class="locked-card-desc">Enter your 64-character Recovery Key.</p>
+
+        <textarea id="vaultPageRecoveryKeyInput" class="form-input form-textarea" rows="4" placeholder="XXXX-XXXX-XXXX-XXXX..." style="width:100%;margin-bottom:12px;"></textarea>
+
+        <button id="vaultPageSubmitRecoveryBtn" class="btn btn-primary btn-block" style="margin-bottom:8px;" type="button">
+          Recover Vault
+        </button>
+        <button id="vaultPageCancelRecoveryBtn" class="btn btn-secondary btn-block" type="button">
+          Back to Login
+        </button>
+      </div>
+
+      <!-- State 5: Set New Password after Recovery -->
+      <div id="vaultSetNewPassCard" class="locked-card hidden" style="max-width:400px;">
+        <h2 class="locked-card-title">Create New Master Password</h2>
+        <p class="locked-card-desc">Vault key recovered. Set a new Master Password to protect your vault.</p>
+
+        <form id="vaultPageSetNewPassForm" style="width:100%;display:flex;flex-direction:column;gap:12px;text-align:left;">
+          <div class="form-group">
+            <label class="form-label" for="vaultPageNewPass">New Master Password</label>
+            <div class="input-with-toggle">
+              <input id="vaultPageNewPass" type="password" class="form-input" placeholder="At least 4 characters" autocomplete="new-password" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="vaultPageNewPass" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <span class="form-hint">At least 4 characters (12+ recommended)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="vaultPageNewPassConfirm">Confirm Password</label>
+            <div class="input-with-toggle">
+              <input id="vaultPageNewPassConfirm" type="password" class="form-input" placeholder="Re-enter password" autocomplete="new-password" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="vaultPageNewPassConfirm" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button id="vaultPageSaveNewPassBtn" class="btn btn-primary btn-block" style="margin-top:6px;" type="submit">
+            Save &amp; Unlock Vault
+          </button>
+        </form>
+      </div>
+
+      <!-- State 6: Corrupted Vault Screen (Stage 6) -->
+      <div id="vaultCorruptedCard" class="locked-card hidden" style="max-width:420px;">
+        <div class="locked-card-icon" style="background-color: var(--danger-container); color: var(--danger);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h2 class="locked-card-title text-danger">Vault Integrity Issue</h2>
+        <p class="locked-card-desc">Your encrypted vault appears to be corrupted or incomplete.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;width:100%;margin-top:14px;">
+          <button id="vaultCorruptedRetryBtn" class="btn btn-secondary btn-block" type="button">Try Unlock Again</button>
+          <button id="vaultCorruptedRestoreBtn" class="btn btn-primary btn-block" type="button">Restore From Backup</button>
+        </div>
+      </div>
+
+      <!-- State 7: Storage Read Error Screen (Stage 6) -->
+      <div id="vaultStorageErrorCard" class="locked-card hidden" style="max-width:420px;">
+        <div class="locked-card-icon" style="background-color: var(--danger-container); color: var(--danger);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2 class="locked-card-title">Storage Read Error</h2>
+        <p class="locked-card-desc">Unable to access your encrypted vault. Please try again.</p>
+        <div style="width:100%;margin-top:14px;">
+          <button id="vaultStorageRetryBtn" class="btn btn-primary btn-block" type="button">Retry</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 1: CHANGE MASTER PASSWORD -->
+    <div id="vaultChangePassModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="changePassModalTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="changePassModalTitle" class="modal-title">Change Master Password</h3>
+          <button id="vaultCloseChangePassBtn" class="btn-icon" aria-label="Close dialog">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <form id="vaultChangePassForm" style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label" for="modalCurPass">Current Master Password</label>
+            <div class="input-with-toggle">
+              <input id="modalCurPass" type="password" class="form-input" autocomplete="off" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="modalCurPass" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalNewPass">New Master Password</label>
+            <div class="input-with-toggle">
+              <input id="modalNewPass" type="password" class="form-input" placeholder="At least 4 characters" autocomplete="new-password" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="modalNewPass" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <span class="form-hint">At least 4 characters (12+ recommended)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalConfirmPass">Confirm New Password</label>
+            <div class="input-with-toggle">
+              <input id="modalConfirmPass" type="password" class="form-input" autocomplete="new-password" data-lpignore="true" required>
+              <button type="button" class="input-toggle-btn" data-target="modalConfirmPass" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button id="modalCancelChangePassBtn" class="btn btn-secondary" type="button">Cancel</button>
+            <button id="modalSubmitChangePassBtn" class="btn btn-primary" type="submit">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 2: RESET VAULT CONFIRMATION -->
+    <div id="vaultResetModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="resetModalTitle" class="modal-title text-danger">Reset / Delete Vault</h3>
+          <button id="vaultCloseResetBtn" class="btn-icon" aria-label="Close dialog">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="danger-callout">
+            <strong>Warning: Destructive Action</strong>
+            <p style="margin-top:4px;">Resetting Secure Vault will permanently delete all saved credentials. This action cannot be undone.</p>
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);">
+            To confirm vault reset, type <strong>RESET</strong> in the box below:
+          </p>
+          <input id="vaultPageResetInput" type="text" class="form-input" placeholder="Type RESET to confirm">
+          <div class="form-actions">
+            <button id="vaultCancelResetBtn" class="btn btn-secondary" type="button">Cancel</button>
+            <button id="vaultConfirmResetBtn" class="btn btn-danger" type="button">Permanently Delete Vault</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: ADD / EDIT ACCOUNT -->
+    <div id="vaultAccountModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="vaultAccountModalTitle">
+      <div class="modal-card" style="max-width: 480px;">
+        <div class="modal-header">
+          <h3 id="vaultAccountModalTitle" class="modal-title">Add Account</h3>
+          <button id="vaultCloseAccountModalBtn" class="btn-icon" aria-label="Close dialog" type="button">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <form id="vaultAccountForm" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+          <!-- Account Name -->
+          <div class="form-group">
+            <label class="form-label" for="accountFormName">
+              Account / Service Name <span class="badge-required">*</span>
+            </label>
+            <input id="accountFormName" type="text" class="form-input" placeholder="e.g., Personal GitHub, Company Email, Bank" required autocomplete="off">
+          </div>
+
+          <!-- Username -->
+          <div class="form-group">
+            <label class="form-label" for="accountFormUsername">
+              Username / Email <span class="badge-required">*</span>
+            </label>
+            <input id="accountFormUsername" type="text" class="form-input" placeholder="e.g., user@example.com or handle" required autocomplete="off">
+          </div>
+
+          <!-- Password with toggle visibility for typing and generator trigger -->
+          <div class="form-group">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <label class="form-label" for="accountFormPassword" style="margin-bottom:0;">
+                Password <span class="badge-required">*</span>
+              </label>
+              <button id="accountFormGenerateBtn" class="btn btn-secondary btn-sm" type="button" style="padding:2px 10px;font-size:11.5px;gap:5px;" title="Generate random secure password">
+                <svg class="icon-svg-sm" style="width:13px;height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"></circle>
+                  <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"></circle>
+                  <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"></circle>
+                  <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"></circle>
+                  <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+                </svg>
+                <span>Generate Password</span>
+              </button>
+            </div>
+            <div class="input-with-toggle">
+              <input id="accountFormPassword" type="password" class="form-input" placeholder="Account password" required autocomplete="new-password">
+              <button type="button" class="input-toggle-btn" data-target="accountFormPassword" aria-label="Toggle password visibility">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label class="form-label" for="accountFormCategory">
+              Category <span class="badge-required">*</span>
+            </label>
+            <select id="accountFormCategory" class="form-select" required>
+              <option value="Gmail">Gmail</option>
+              <option value="Social">Social</option>
+              <option value="Work">Work</option>
+              <option value="Other" selected>Other</option>
+            </select>
+          </div>
+
+          <!-- Website -->
+          <div class="form-group">
+            <label class="form-label" for="accountFormWebsite">
+              Website URL <span class="badge-optional">(Optional)</span>
+            </label>
+            <input id="accountFormWebsite" type="url" class="form-input" placeholder="https://example.com" autocomplete="off">
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label class="form-label" for="accountFormNotes">
+              Notes <span class="badge-optional">(Optional)</span>
+            </label>
+            <textarea id="accountFormNotes" class="form-input form-textarea" rows="3" placeholder="Security questions, PINs, or recovery notes..."></textarea>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button id="accountFormCancelBtn" class="btn btn-secondary" type="button">Cancel</button>
+            <button id="accountFormSubmitBtn" class="btn btn-primary" type="submit">Save Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 4: DELETE ACCOUNT CONFIRMATION -->
+    <div id="vaultDeleteModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="vaultDeleteModalTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="vaultDeleteModalTitle" class="modal-title text-danger">Delete Account</h3>
+          <button id="vaultCloseDeleteModalBtn" class="btn-icon" aria-label="Close dialog" type="button">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 13.5px; color: var(--text-primary);">
+            Are you sure you want to permanently delete <strong id="deleteAccountTargetName" style="color: var(--primary);"></strong> from your encrypted vault?
+          </p>
+          <div class="warning-callout" style="font-size: 12px; margin-top: 4px;">
+            This action will remove the account from your encrypted local storage.
+          </div>
+          <div class="form-actions" style="margin-top: 12px;">
+            <button id="vaultCancelDeleteBtn" class="btn btn-secondary" type="button">Cancel</button>
+            <button id="vaultConfirmDeleteBtn" class="btn btn-danger" type="button">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 5: PASSWORD GENERATOR (Stage 5) -->
+    <div id="vaultGeneratorModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="generatorModalTitle">
+      <div class="modal-card generator-modal-card">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <div class="modal-icon-badge">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </div>
+            <h3 id="generatorModalTitle" class="modal-title">Password Generator</h3>
+          </div>
+          <button id="vaultCloseGeneratorBtn" class="btn-icon" aria-label="Close dialog" type="button">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+          <!-- Generated Password Display Box -->
+          <div class="generator-preview-box">
+            <input id="generatorPreviewInput" type="text" class="generator-preview-input" readonly spellcheck="false" autocomplete="off" aria-label="Generated password preview">
+            <div class="generator-preview-actions">
+              <button id="generatorRegenBtn" class="btn btn-secondary btn-sm" type="button" title="Regenerate password">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span>Generate</span>
+              </button>
+              <button id="generatorCopyBtn" class="btn btn-primary btn-sm" type="button" title="Copy generated password">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error / Validation Warning -->
+          <div id="generatorErrorBanner" class="generator-error-banner hidden" role="alert">
+            <span id="generatorErrorText">Error message</span>
+          </div>
+
+          <!-- Length Control -->
+          <div class="generator-control-section">
+            <div class="generator-label-row">
+              <label for="generatorLengthInput" class="form-label" style="margin-bottom:0;">Password Length</label>
+              <div class="generator-length-display">
+                <input id="generatorLengthInput" type="number" min="8" max="128" value="20" class="generator-length-number" aria-label="Password length numeric value">
+              </div>
+            </div>
+            <input id="generatorLengthRange" type="range" min="8" max="128" value="20" class="generator-length-slider" aria-label="Password length slider">
+            <div class="generator-slider-limits">
+              <span>8</span>
+              <span>128</span>
+            </div>
+          </div>
+
+          <!-- Character Types Options -->
+          <div class="generator-control-section">
+            <span class="form-label" style="display:block;margin-bottom:6px;">Character Types</span>
+            <div class="generator-checkbox-grid">
+              <label class="generator-checkbox-label">
+                <input id="genOptUppercase" type="checkbox" checked class="generator-checkbox">
+                <span>Uppercase (A-Z)</span>
+              </label>
+              <label class="generator-checkbox-label">
+                <input id="genOptLowercase" type="checkbox" checked class="generator-checkbox">
+                <span>Lowercase (a-z)</span>
+              </label>
+              <label class="generator-checkbox-label">
+                <input id="genOptNumbers" type="checkbox" checked class="generator-checkbox">
+                <span>Numbers (0-9)</span>
+              </label>
+              <label class="generator-checkbox-label">
+                <input id="genOptSymbols" type="checkbox" checked class="generator-checkbox">
+                <span>Symbols (!@#$%^&*)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Footer with Use in Form (if account modal open) & Close button -->
+          <div class="form-actions" style="margin-top: 6px;">
+            <button id="generatorUseInFormBtn" class="btn btn-primary hidden" type="button">Use in Account</button>
+            <button id="generatorDoneBtn" class="btn btn-secondary" style="flex:1;" type="button">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 6: SECURITY & SETTINGS (Stage 6) -->
+    <div id="vaultSettingsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="modal-card" style="max-width: 480px;">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <h3 id="settingsModalTitle" class="modal-title">Security &amp; Backup</h3>
+          </div>
+          <button id="vaultCloseSettingsBtn" class="btn-icon" aria-label="Close dialog" type="button">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+          <!-- Security Settings -->
+          <div class="settings-group">
+            <h4 class="settings-section-heading" style="font-size:14px;font-weight:600;margin-bottom:6px;">Security</h4>
+            <div class="form-group" style="margin-top: 10px;">
+              <label class="form-label" for="autoLockSelect">Auto-lock vault after</label>
+              <select id="autoLockSelect" class="form-select">
+                <option value="1">1 minute</option>
+                <option value="5" selected>5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="0">Never (disabled)</option>
+              </select>
+              <span class="form-hint">Automatically locks the vault after inactivity to protect credentials.</span>
+            </div>
+            <div style="margin-top: 12px;">
+              <button id="settingsLockNowBtn" class="btn btn-secondary btn-sm" type="button">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Lock Vault Now</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Backup & Restore -->
+          <div class="settings-group" style="border-top: 1px solid var(--border); padding-top: 16px;">
+            <h4 class="settings-section-heading" style="font-size:14px;font-weight:600;margin-bottom:6px;">Backup</h4>
+            <p style="font-size: 12.5px; color: var(--text-secondary); margin: 6px 0 12px 0; line-height: 1.5;">
+              Export an encrypted copy of your vault or restore from a previous backup file. Backups are AES-256-GCM protected and require the original Master Password or Recovery Key.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button id="settingsExportBackupBtn" class="btn btn-secondary btn-sm" type="button">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Export Encrypted Backup</span>
+              </button>
+              <button id="settingsRestoreBackupBtn" class="btn btn-secondary btn-sm" type="button">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Restore From Backup</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+          <button id="vaultCloseSettingsBtn2" class="btn btn-secondary btn-sm" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 7: RESTORE FROM BACKUP (Stage 6) -->
+    <div id="vaultRestoreModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="restoreModalTitle">
+      <div class="modal-card" style="max-width: 480px;">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <h3 id="restoreModalTitle" class="modal-title">Restore Encrypted Backup</h3>
+          </div>
+          <button id="vaultCloseRestoreBtn" class="btn-icon" aria-label="Close dialog" type="button">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <!-- Hidden Native File Input -->
+          <input type="file" id="backupFileInput" accept=".json,.svault,.svault.json" style="display:none;">
+
+          <!-- Step 1: File Selection -->
+          <div id="restoreStepFile" class="restore-step">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button id="selectBackupFileBtn" class="btn btn-secondary btn-block" type="button">
+                <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="12" y1="18" x2="12" y2="12"></line>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>Select Backup File (.json / .svault)</span>
+              </button>
+              <div id="backupFileInfo" class="form-hint" style="text-align:center;">
+                Maximum file size: 5 MB. Supported formats: .svault.json, .svault, .json
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Alert Banner -->
+          <div id="restoreErrorBanner" class="danger-callout hidden" style="font-size:12px;">
+            <span id="restoreErrorText">Error message</span>
+          </div>
+
+          <!-- Step 2: Authenticate Backup (Shown once file is structurally verified) -->
+          <div id="restoreStepAuth" class="restore-step hidden">
+            <div class="status-pill" style="margin-bottom:12px;">
+              <span class="status-dot"></span>
+              <span id="restoreFileMetaText">Backup file loaded</span>
+            </div>
+
+            <div style="font-size:12.5px;color:var(--text-secondary);margin-bottom:10px;">
+              Authenticate this backup using the credentials configured when it was exported:
+            </div>
+
+            <!-- Mode Selector Tabs -->
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button id="restoreAuthModePassBtn" class="btn btn-primary btn-sm" style="flex:1;" type="button">
+                Master Password
+              </button>
+              <button id="restoreAuthModeRecoveryBtn" class="btn btn-secondary btn-sm" style="flex:1;" type="button">
+                Recovery Key
+              </button>
+            </div>
+
+            <!-- Master Password Auth Form -->
+            <div id="restorePassGroup" class="form-group">
+              <label class="form-label" for="restoreMasterPasswordInput">Backup Master Password</label>
+              <div class="input-with-toggle">
+                <input id="restoreMasterPasswordInput" type="password" class="form-input" placeholder="Enter backup Master Password" autocomplete="off" data-lpignore="true">
+                <button type="button" class="input-toggle-btn" data-target="restoreMasterPasswordInput" aria-label="Toggle password visibility">
+                  <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Recovery Key Auth Form -->
+            <div id="restoreRecoveryGroup" class="form-group hidden">
+              <label class="form-label" for="restoreRecoveryKeyInput">Backup Recovery Key</label>
+              <input id="restoreRecoveryKeyInput" type="text" class="form-input form-mono" placeholder="XXXX-XXXX-XXXX-XXXX..." autocomplete="off">
+            </div>
+
+            <button id="restoreVerifyBtn" class="btn btn-primary btn-block" style="margin-top:10px;" type="button">
+              Verify Backup
+            </button>
+          </div>
+
+          <!-- Step 3: Verified Confirmation (Shown once backup is successfully authenticated) -->
+          <div id="restoreStepConfirm" class="restore-step hidden">
+            <div style="display:flex;align-items:center;gap:8px;color:var(--success);font-weight:600;font-size:14px;margin-bottom:8px;">
+              <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>Backup Verified</span>
+            </div>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px;">
+              The encrypted backup is valid and can be restored.
+            </p>
+
+            <div class="danger-callout" style="font-size:12px;margin-bottom:14px;">
+              <strong>Restore this backup?</strong>
+              <p style="margin-top:4px;">
+                This will replace the current Secure Vault on this device. Your current vault will not be merged with the backup.
+              </p>
+            </div>
+
+            <div class="form-actions">
+              <button id="restoreCancelBtn" class="btn btn-secondary" type="button">Cancel</button>
+              <button id="restoreCommitBtn" class="btn btn-danger" type="button">Replace Current Vault</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../scripts/vault.js" type="module"></script>
+</body>
+</html>
