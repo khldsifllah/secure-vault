@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Vault</title>
+  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="header-icon-box">
+          <svg class="header-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="header-title">Secure Vault</span>
+        <span class="badge-status" id="headerStatus">Local</span>
+      </div>
+
+      <div class="header-actions">
+        <!-- Lock button (visible when unlocked) -->
+        <button id="popupLockBtn" class="btn-icon hidden" aria-label="Lock Vault" title="Lock Vault Now">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </button>
+
+        <!-- Theme toggle -->
+        <button id="themeToggleBtn" class="btn-icon" aria-label="Toggle dark/light theme" title="Toggle theme">
+          <svg id="themeIconDark" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg id="themeIconLight" class="icon-svg hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+
+        <!-- Open dedicated full-page vault -->
+        <button id="openVaultPageBtn" class="btn-icon" aria-label="Open Vault in full tab" title="Open full tab vault">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Stage 7 Active Site Detection Bar -->
+    <div id="siteDetectionBar" class="site-detection-bar">
+      <div class="site-badge-group">
+        <svg class="site-globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span id="siteNameDisplay" class="site-name-display" title="Detecting active site...">Detecting active site...</span>
+      </div>
+      <span id="siteMatchCount" class="site-match-count hidden">0 matches</span>
+    </div>
+
+    <!-- Notification banner -->
+    <div id="popupNotice" class="notification-banner hidden" role="alert">
+      <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span id="popupNoticeText">Notice</span>
+    </div>
+
+    <!-- VIEW 1: NEEDS SETUP VIEW -->
+    <main id="popupSetupView" class="view-section locked-section hidden" aria-labelledby="setupHeading">
+      <div class="lock-graphic-container">
+        <div class="lock-shield-pulse"></div>
+        <div class="lock-shield-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+        </div>
+      </div>
+      <div class="locked-info">
+        <h1 id="setupHeading" class="locked-title">Vault Setup Required</h1>
+        <p class="locked-subtitle">Create a Master Password in the dedicated vault page to initialize your local offline vault.</p>
+      </div>
+      <div class="locked-actions">
+        <button id="setupVaultBtn" class="btn btn-primary btn-block" type="button">
+          Open Vault to Setup
+        </button>
+      </div>
+      <div class="stage-footer-note">AES-256-GCM • Offline • Manifest V3</div>
+    </main>
+
+    <!-- VIEW 2: LOCKED VIEW (Enter password or open full vault) -->
+    <main id="popupLockedView" class="view-section locked-section" aria-labelledby="lockedHeading">
+      <div class="lock-graphic-container">
+        <div class="lock-shield-pulse"></div>
+        <div class="lock-shield-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <rect x="8" y="11" width="8" height="6" rx="1.5" fill="currentColor" fill-opacity="0.2"/>
+            <path d="M9.5 11V9a2.5 2.5 0 0 1 5 0v2"/>
+            <circle cx="12" cy="14" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="locked-info">
+        <h1 id="lockedHeading" class="locked-title">Vault Locked</h1>
+        <p class="locked-subtitle">Unlock to autofill credentials on this site.</p>
+      </div>
+
+      <!-- Quick unlock form -->
+      <form id="popupUnlockForm" class="unlock-form" autocomplete="off">
+        <div class="form-group">
+          <label for="popupMasterPasswordInput" class="sr-only">Master Password</label>
+          <div class="input-with-button">
+            <input
+              type="password"
+              id="popupMasterPasswordInput"
+              class="form-input"
+              placeholder="Enter Master Password"
+              required
+              autocomplete="off"
+              data-lpignore="true"
+              data-form-type="other"
+            />
+            <button id="popupSubmitUnlockBtn" class="btn btn-primary" type="submit">
+              Unlock
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="locked-actions">
+        <button id="launchVaultBtn" class="btn btn-secondary btn-block" type="button">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h6v6"/>
+            <path d="M10 14L21 3"/>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          </svg>
+          Open Dedicated Vault
+        </button>
+      </div>
+
+      <div class="stage-footer-note">
+        Open: <code style="color:var(--primary);background:var(--surface-container);padding:2px 6px;border-radius:4px;">Ctrl+Shift+L</code> • Lock: <code style="color:var(--primary);background:var(--surface-container);padding:2px 6px;border-radius:4px;">Ctrl+Shift+K</code>
+      </div>
+    </main>
+
+    <!-- VIEW 3: UNLOCKED VIEW (Stage 7 Website Matching & Autofill) -->
+    <main id="popupUnlockedView" class="view-section unlocked-section hidden" aria-labelledby="unlockedHeading">
+      <h2 id="unlockedHeading" class="sr-only">Matching Accounts</h2>
+
+      <!-- Quick search input -->
+      <div class="quick-search-box">
+        <input
+          type="search"
+          id="popupSearchInput"
+          class="form-input"
+          placeholder="Search all accounts..."
+          style="padding: 7px 12px; font-size: 12.5px;"
+        />
+      </div>
+
+      <!-- Scrollable Accounts Area -->
+      <div class="accounts-scroll-area">
+        <!-- MATCHED SECTION -->
+        <div id="matchedSectionWrapper">
+          <div class="section-label-row">
+            <span class="section-title-sm">Matched for Current Site</span>
+          </div>
+          <div id="matchedAccountsList" class="accounts-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- NO MATCHES PROMPT -->
+        <div id="noMatchesNotice" class="empty-state-box hidden" style="padding: 24px 14px; margin: 6px 0;">
+          <div class="empty-state-icon" style="width: 44px; height: 44px; margin-bottom: 10px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <div class="empty-state-title" style="font-size: 14px;">No matching accounts</div>
+          <div id="noMatchesDesc" class="empty-state-desc" style="font-size: 11.5px; margin-bottom: 12px;">
+            No saved accounts found for this website.
+          </div>
+          <button id="addAccountForSiteBtn" class="btn btn-secondary btn-action" type="button" style="width: auto; padding: 6px 14px;">
+            + Add account for this site
+          </button>
+        </div>
+
+        <!-- ALL OTHER ACCOUNTS (Search results or browsing) -->
+        <div id="otherAccountsSectionWrapper" class="hidden">
+          <div class="section-label-row" style="margin-top: 14px;">
+            <span class="section-title-sm" id="otherAccountsTitle">Other Accounts</span>
+          </div>
+          <div id="otherAccountsList" class="accounts-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="popup-footer" style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11px; color: var(--text-tertiary);">Volatile memory • Auto-clears</span>
+        <button id="popupOpenFullTabLink" class="btn-link" style="font-size: 11.5px; color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline;" type="button">
+          Open Full Tab Vault
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

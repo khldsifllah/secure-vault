@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Secure Vault",
+  "version": "1.0.1",
+  "description": "Personal offline password manager. Your credentials stay locally on this device.",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Secure Vault",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png",
+      "48": "assets/icons/icon-48.png",
+      "128": "assets/icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_ui": {
+    "page": "pages/vault.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "open-vault": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L"
+      },
+      "description": "Open Secure Vault"
+    },
+    "lock-vault": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Lock Secure Vault"
+    }
+  },
+  "permissions": [
+    "storage",
+    "clipboardWrite",
+    "alarms",
+    "idle",
+    "activeTab",
+    "scripting"
+  ]
+}
