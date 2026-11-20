@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Secure Vault",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Personal offline password manager. Your credentials stay locally on this device.",
   "icons": {
     "16": "assets/icons/icon-16.png",
