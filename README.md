@@ -10,6 +10,17 @@
 
 > **Important:** This repository contains the extension source code at its root. There is no build step, Node.js runtime, React/Vite workbench, nested release ZIP, or external runtime package dependency required to load the extension.
 
+## Screenshots
+
+### Light Theme
+![Secure Vault UI - Light](screenshots/ui-light.png)
+
+### Dark Theme
+![Secure Vault UI - Dark](screenshots/ui-dark.png)
+
+### Popup Showcase
+![Secure Vault Popup](screenshots/popup-showcase.png)
+
 ## Features
 
 - Master Password protected vault with a separate Recovery Key.
