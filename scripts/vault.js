@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // --- THEME SYSTEM ---
   function initTheme() {
-    const savedTheme = localStorage.getItem('secure_vault_theme') || 'dark';
+    const savedTheme = localStorage.getItem('secure_vault_theme') || 'light';
     applyTheme(savedTheme);
   }
 
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (vaultThemeToggleBtn) {
     vaultThemeToggleBtn.addEventListener('click', () => {
-      const currentTheme = htmlRoot.getAttribute('data-theme') || 'dark';
+      const currentTheme = htmlRoot.getAttribute('data-theme') || 'light';
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       applyTheme(newTheme);
       try {
@@ -1440,6 +1440,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Show a live count on each category chip (All, Gmail, Social, ...)
+  function updateCategoryChipCounts(accounts) {
+    if (!categoryChipsGroup) return;
+    const list = Array.isArray(accounts) ? accounts : [];
+    categoryChipsGroup.querySelectorAll('.chip').forEach((chip) => {
+      const cat = chip.getAttribute('data-category') || 'All';
+      const badge = chip.querySelector('.chip-count');
+      if (!badge) return;
+      badge.textContent = String(
+        cat === 'All' ? list.length : list.filter((a) => (a.category || 'Other') === cat).length
+      );
+    });
+  }
+
+  // Stable colour tone (0-5) for an account avatar, derived from its name
+  function avatarToneFor(name) {
+    const str = String(name || 'A');
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    return h % 6;
+  }
+
   // --- STAGE 4 CLIPBOARD AUTO-CLEAR & COPY HELPERS ---
 
   /**
@@ -1723,6 +1745,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (vaultAccountsSection) vaultAccountsSection.classList.add('hidden');
       if (accountsListContainer) accountsListContainer.innerHTML = '';
       updateItemCount(0);
+      updateCategoryChipCounts([]);
       return;
     }
 
@@ -1730,6 +1753,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (vaultEmptyState) vaultEmptyState.classList.add('hidden');
     if (vaultFilterSortToolbar) vaultFilterSortToolbar.classList.remove('hidden');
     updateItemCount(decryptedVault.accounts.length);
+    updateCategoryChipCounts(decryptedVault.accounts);
 
     const visibleAccounts = getFilteredAndSortedAccounts();
 
@@ -1762,7 +1786,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       brandDiv.className = 'account-card-brand';
 
       const avatar = document.createElement('div');
-      avatar.className = 'account-avatar-badge';
+      avatar.className = `account-avatar-badge tone-${avatarToneFor(account.name)}`;
       avatar.textContent = initial;
 
       const titleGroup = document.createElement('div');

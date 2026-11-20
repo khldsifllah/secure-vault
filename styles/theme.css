@@ -3,104 +3,126 @@
  * Default theme: Dark mode. Fully adaptable to light mode.
  */
 
+/* Shared (theme-independent) tokens */
+:root {
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --font-family: "Inter", "Avenir Next", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-sans: var(--font-family);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Icon-badge palette (used for account avatars) */
+  --badge-pink: #ec4899;
+  --badge-teal: #14b8a6;
+  --badge-blue: #3b82f6;
+  --badge-orange: #f97316;
+  --badge-violet: #c77dde;
+  --badge-sky: #60a5fa;
+}
+
+/* LIGHT (default) - soft, airy, white cards on a pale lavender-grey canvas */
 :root,
+[data-theme="light"] {
+  --background: #eef0f6;
+  --surface: #ffffff;
+  --surface-container: #f4f6fb;
+  --surface-container-high: #e9edf5;
+  --surface-container-highest: #dde3ee;
+
+  --primary: #00a8cc;
+  --primary-hover: #0092b2;
+  --on-primary: #ffffff;
+  --primary-container: #dff6fb;
+  --on-primary-container: #006b82;
+
+  --text-primary: #2b2f3a;
+  --text-secondary: #6b7385;
+  --text-tertiary: #98a0b3;
+
+  --border: #e6e9f2;
+  --border-subtle: #eef0f6;
+  --border-focus: #00a8cc;
+
+  --danger: #e5484d;
+  --danger-container: #fdecec;
+  --on-danger-container: #8a1c1f;
+
+  --success: #12b886;
+  --success-container: #def7ec;
+  --on-success-container: #05603a;
+
+  --warning: #f59e0b;
+  --warning-container: #fef3c7;
+  --on-warning-container: #78350f;
+  --info: #0ea5e9;
+  --info-container: #e0f2fe;
+  --on-info-container: #0c4a6e;
+  --badge-bg: #dff6fb;
+  --badge-text: #007c99;
+
+  --shadow-card: 0 10px 30px rgba(104, 116, 150, 0.12);
+  --shadow-card-hover: 0 16px 40px rgba(0, 168, 204, 0.18);
+  --elevation-1: 0 2px 8px rgba(104, 116, 150, 0.10);
+  --elevation-2: 0 8px 22px rgba(104, 116, 150, 0.16);
+  --elevation-3: 0 20px 50px rgba(60, 72, 110, 0.22);
+  --glow-primary: 0 6px 16px rgba(0, 168, 204, 0.35);
+  --canvas-gradient: radial-gradient(1200px 600px at 85% -10%, #ffffff 0%, rgba(255,255,255,0) 60%), linear-gradient(180deg, #eef0f6 0%, #e8ebf3 100%);
+}
+
+/* DARK - same layout language, deep navy surfaces */
 [data-theme="dark"] {
-  --background: #0f1117;
-  --surface: #171923;
-  --surface-container: #1e2230;
-  --surface-container-high: #272d3f;
-  --surface-container-highest: #31384e;
-  
-  --primary: #818cf8;
-  --primary-hover: #9ca3af;
-  --on-primary: #0b0f1d;
-  --primary-container: #262947;
-  --on-primary-container: #e0e7ff;
-  
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  
-  --border: #293043;
-  --border-subtle: #202636;
-  --border-focus: #818cf8;
-  
+  --background: #0f1320;
+  --surface: #171c2c;
+  --surface-container: #1d2336;
+  --surface-container-high: #262d44;
+  --surface-container-highest: #313a56;
+
+  --primary: #22c3e6;
+  --primary-hover: #4fd2ee;
+  --on-primary: #04202a;
+  --primary-container: #0f3a47;
+  --on-primary-container: #c7f1fb;
+
+  --text-primary: #eef1f8;
+  --text-secondary: #a3acc2;
+  --text-tertiary: #727b94;
+
+  --border: #262d44;
+  --border-subtle: #1e2438;
+  --border-focus: #22c3e6;
+
   --danger: #f87171;
   --danger-container: #3c1919;
   --on-danger-container: #fecaca;
-  
+
   --success: #34d399;
   --success-container: #0f3529;
   --on-success-container: #d1fae5;
-  
+
   --warning: #fbbf24;
   --warning-container: #3c2405;
   --on-warning-container: #fef3c7;
   --info: #38bdf8;
   --info-container: #0c2d48;
   --on-info-container: #e0f2fe;
-  --badge-bg: #212638;
-  --badge-text: #a5b4fc;
+  --badge-bg: #0f3a47;
+  --badge-text: #7fe0f5;
 
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
-
-  --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.35);
-  --elevation-2: 0 4px 14px rgba(0, 0, 0, 0.45);
-  --elevation-3: 0 8px 28px rgba(0, 0, 0, 0.6);
-
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-}
-
-[data-theme="light"] {
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --surface-container: #f1f5f9;
-  --surface-container-high: #e2e8f0;
-  --surface-container-highest: #cbd5e1;
-  
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --on-primary: #ffffff;
-  --primary-container: #e0e7ff;
-  --on-primary-container: #1e1b4b;
-  
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
-  
-  --border: #e2e8f0;
-  --border-subtle: #f1f5f9;
-  --border-focus: #4f46e5;
-  
-  --danger: #dc2626;
-  --danger-container: #fee2e2;
-  --on-danger-container: #7f1d1d;
-  
-  --success: #059669;
-  --success-container: #d1fae5;
-  --on-success-container: #064e3b;
-  
-  --warning: #d97706;
-  --warning-container: #fef3c7;
-  --on-warning-container: #78350f;
-  --info: #0284c7;
-  --info-container: #e0f2fe;
-  --on-info-container: #0c4a6e;
-  --badge-bg: #e0e7ff;
-  --badge-text: #3730a3;
-
-  --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --elevation-3: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 16px 40px rgba(34, 195, 230, 0.18);
+  --elevation-1: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --elevation-2: 0 8px 22px rgba(0, 0, 0, 0.45);
+  --elevation-3: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --glow-primary: 0 6px 16px rgba(34, 195, 230, 0.3);
+  --canvas-gradient: linear-gradient(180deg, #0f1320 0%, #0b0f1a 100%);
 }
 
 /* Base reset */
@@ -112,6 +134,7 @@
 
 body {
   font-family: var(--font-family);
+  background: var(--canvas-gradient);
   background-color: var(--background);
   color: var(--text-primary);
   line-height: 1.5;
@@ -129,7 +152,7 @@ body {
   font-size: 14px;
   font-weight: 500;
   padding: 10px 18px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -146,7 +169,7 @@ body {
 .btn-primary {
   background-color: var(--primary);
   color: var(--on-primary);
-  box-shadow: var(--elevation-1);
+  box-shadow: var(--glow-primary);
 }
 
 .btn-primary:hover {
@@ -402,7 +425,7 @@ body {
 .search-input:focus {
   border-color: var(--primary);
   background-color: var(--surface);
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 168, 204, 0.15);
 }
 
 /* Card */
@@ -466,4 +489,9 @@ body {
 
 .notification-banner.hidden {
   display: none !important;
+}
+
+/* Terminal-style font stack (system fonts only; works offline in an extension) */
+:root {
+  --font-hack: "JetBrains Mono", "Fira Code", "Cascadia Code", "SF Mono", ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,26 +9,58 @@
 </head>
 <body>
   <div class="app-layout">
-    <!-- Top Navigation Header -->
-    <header class="vault-navbar">
-      <div class="vault-container nav-content">
-        <div class="brand-group">
-          <div class="vault-brand-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
-            </svg>
-          </div>
-          <div>
-            <div class="brand-title-wrap">
-              <h1 class="brand-name">Secure Vault</h1>
-              <span class="badge-status">Chromium Extension</span>
-            </div>
-            <p class="brand-sub">Offline personal credentials manager</p>
-          </div>
+    <!-- Sidebar -->
+    <aside class="vault-sidebar" aria-label="Primary">
+      <div class="sidebar-brand">
+        <div class="vault-brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <h1 class="brand-name">Secure Vault</h1>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-item active" aria-current="page">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Accounts</span>
         </div>
 
+        <button id="vaultOpenGeneratorBtn" class="nav-item" type="button" aria-label="Open Password Generator" title="Generate secure random password">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/></svg>
+          <span>Password Generator</span>
+        </button>
+
+        <button id="vaultOpenChangePassBtn" class="nav-item" type="button">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4"/><path d="M18 5l3 3"/><path d="M15 8l3 3"/></svg>
+          <span>Change Password</span>
+        </button>
+
+        <button id="vaultOpenSettingsBtn" class="nav-item" type="button" aria-label="Security and Backup Settings" title="Security &amp; Settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2" fill="var(--surface)"/><circle cx="15" cy="12" r="2" fill="var(--surface)"/><circle cx="8" cy="18" r="2" fill="var(--surface)"/></svg>
+          <span>Settings</span>
+        </button>
+
+        <button id="vaultOpenResetBtn" class="nav-item nav-item-danger" type="button">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Reset Vault</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="lockVaultBtn" class="nav-item" type="button" aria-label="Lock vault now">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Lock Vault</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="app-body">
+    <!-- Top Bar -->
+    <header class="vault-navbar">
+      <div class="nav-content">
         <!-- Global Search Bar (Stage 4) -->
         <div id="navSearchContainer" class="nav-search-container">
           <div class="search-box">
@@ -40,8 +72,8 @@
           </div>
         </div>
 
-        <!-- Nav Controls -->
         <div class="nav-actions">
+          <span class="status-pill"><span class="status-dot"></span><span>Offline &middot; AES-256</span></span>
           <button id="vaultThemeToggleBtn" class="btn-icon" aria-label="Toggle theme" title="Toggle dark/light mode">
             <svg id="vaultThemeIconDark" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="5"/>
@@ -57,46 +89,6 @@
             <svg id="vaultThemeIconLight" class="icon-svg hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
-          </button>
-
-          <button id="vaultOpenGeneratorBtn" class="btn btn-secondary btn-sm" aria-label="Open Password Generator" title="Generate secure random password">
-            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"></circle>
-              <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"></circle>
-              <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"></circle>
-              <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"></circle>
-              <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
-            </svg>
-            <span>Password Generator</span>
-          </button>
-
-          <button id="vaultAddAccountBtn" class="btn btn-primary btn-sm" type="button">
-            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            <span>+ Add Account</span>
-          </button>
-
-          <button id="lockVaultBtn" class="btn btn-secondary btn-sm" aria-label="Lock vault now">
-            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            <span>Lock</span>
-          </button>
-
-          <button id="vaultOpenChangePassBtn" class="btn btn-secondary btn-sm">
-            <span>Change Password</span>
-          </button>
-
-          <button id="vaultOpenSettingsBtn" class="btn btn-secondary btn-sm" aria-label="Security and Backup Settings" title="Security & Settings">
-            <span>Settings</span>
-          </button>
-
-          <button id="vaultOpenResetBtn" class="btn btn-secondary btn-sm btn-link-danger">
-            <span>Reset Vault</span>
           </button>
         </div>
       </div>
@@ -121,32 +113,29 @@
 
     <!-- Main Content Area -->
     <main class="vault-container main-content">
-      <!-- Vault Status Banner -->
+      <!-- Page head -->
       <section class="overview-banner">
         <div class="overview-info">
-          <div class="status-pill">
-            <span class="status-dot"></span>
-            <span>Offline Local Vault</span>
-          </div>
           <h2 class="overview-title">Saved Accounts</h2>
-          <p class="overview-subtitle">
-            All account credentials are encrypted with AES-256-GCM and stored only on this device.
-          </p>
+          <p class="overview-subtitle">Encrypted with AES-256-GCM and stored only on this device</p>
         </div>
 
         <div class="overview-controls">
-          <span id="accountCountLabel" class="account-count" style="font-size:13px;font-weight:600;color:var(--text-secondary);">0 accounts</span>
+          <span id="accountCountLabel" class="account-count">0 accounts</span>
+          <button id="vaultAddAccountBtn" class="btn-add-square" type="button" aria-label="Add account" title="Add account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
         </div>
       </section>
 
       <!-- Category Filter Chips & Sort Toolbar (Stage 4) -->
       <section id="vaultFilterSortToolbar" class="categories-toolbar hidden" aria-label="Category filters and sorting">
         <div class="chip-container" id="categoryChipsGroup" role="tablist" aria-label="Category filters">
-          <button type="button" class="chip active" data-category="All" role="tab" aria-selected="true">All</button>
-          <button type="button" class="chip" data-category="Gmail" role="tab" aria-selected="false">Gmail</button>
-          <button type="button" class="chip" data-category="Social" role="tab" aria-selected="false">Social</button>
-          <button type="button" class="chip" data-category="Work" role="tab" aria-selected="false">Work</button>
-          <button type="button" class="chip" data-category="Other" role="tab" aria-selected="false">Other</button>
+          <button type="button" class="chip active" data-category="All" role="tab" aria-selected="true">All<span class="chip-count" data-count-for="All">0</span></button>
+          <button type="button" class="chip" data-category="Gmail" role="tab" aria-selected="false">Gmail<span class="chip-count" data-count-for="Gmail">0</span></button>
+          <button type="button" class="chip" data-category="Social" role="tab" aria-selected="false">Social<span class="chip-count" data-count-for="Social">0</span></button>
+          <button type="button" class="chip" data-category="Work" role="tab" aria-selected="false">Work<span class="chip-count" data-count-for="Work">0</span></button>
+          <button type="button" class="chip" data-category="Other" role="tab" aria-selected="false">Other<span class="chip-count" data-count-for="Other">0</span></button>
         </div>
 
         <div class="sort-control-group">
@@ -203,6 +192,7 @@
         <div id="accountsListContainer" class="accounts-grid"></div>
       </section>
     </main>
+    </div><!-- /app-body -->
 
     <!-- ============================================== -->
     <!-- AUTH OVERLAY (First-time setup / Unlock / Recovery) -->

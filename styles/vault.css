@@ -60,12 +60,12 @@ html, body {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  background: linear-gradient(135deg, #17c3e3, #0096bf);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 168, 204, 0.4);
 }
 
 .vault-brand-icon svg {
@@ -268,7 +268,7 @@ html, body {
 
 .sort-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 168, 204, 0.2);
 }
 
 .account-count {
@@ -568,7 +568,7 @@ html, body {
 .form-select:focus {
   border-color: var(--primary);
   background-color: var(--surface);
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 168, 204, 0.15);
 }
 
 .form-actions {
@@ -620,7 +620,7 @@ html, body {
   width: 38px;
   height: 38px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  background: linear-gradient(135deg, #17c3e3, #0096bf);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -772,8 +772,8 @@ html, body {
 
 .btn-card-action.btn-autofill {
   color: var(--primary);
-  border-color: rgba(99, 102, 241, 0.35);
-  background-color: rgba(99, 102, 241, 0.05);
+  border-color: rgba(0, 168, 204, 0.35);
+  background-color: rgba(0, 168, 204, 0.05);
 }
 
 .btn-card-action.btn-autofill:hover {
@@ -1243,3 +1243,616 @@ html, body {
   color: var(--warning);
 }
 
+
+
+/* =====================================================================
+   DESIGN v2 - "Boardto"-inspired layout
+   Sidebar nav, rounded white cards, cyan accent, colour icon badges.
+   (Appended last so it overrides the earlier dark/indigo rules.)
+   ===================================================================== */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+/* ---------- Sidebar ---------- */
+.vault-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 26px 18px 22px;
+  background: var(--surface);
+  border-right: 1px solid var(--border-subtle);
+  z-index: 120;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+}
+
+.vault-brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #17c3e3, #0096bf);
+  box-shadow: var(--glow-primary);
+  flex-shrink: 0;
+}
+
+.vault-brand-icon svg { width: 18px; height: 18px; }
+
+.sidebar-brand .brand-name {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 14px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 13px 18px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.nav-item:hover {
+  background: var(--surface-container);
+  color: var(--text-primary);
+}
+
+.nav-item:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--glow-primary);
+  cursor: default;
+}
+
+.nav-item.nav-item-danger:hover {
+  background: var(--danger-container);
+  color: var(--danger);
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ---------- Body / top bar ---------- */
+.app-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface);
+}
+
+.vault-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: none;
+}
+
+.vault-navbar .nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 76px;
+  padding: 14px 36px;
+}
+
+.nav-search-container { flex: 1 1 360px; max-width: 460px; margin: 0; }
+
+.search-input {
+  background-color: var(--surface-container);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 11px 16px 11px 44px;
+}
+
+.search-input:focus {
+  background-color: var(--surface);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(0, 168, 204, 0.14);
+}
+
+.nav-actions { gap: 14px; flex-wrap: nowrap; }
+
+.vault-navbar .status-pill {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: none;
+  font-weight: 600;
+  font-size: 11.5px;
+}
+
+/* ---------- Content canvas ---------- */
+.main-content.vault-container {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 34px 40px 72px;
+  gap: 26px;
+  background: var(--canvas-gradient);
+  background-color: var(--background);
+  border-top-left-radius: 36px;
+  min-height: calc(100vh - 76px);
+}
+
+.overview-banner {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  align-items: center;
+}
+
+.overview-title { font-size: 21px; font-weight: 600; letter-spacing: -0.2px; }
+.overview-subtitle { font-size: 12px; color: var(--text-tertiary); }
+.overview-info { gap: 4px; }
+.overview-controls { gap: 18px; }
+.account-count { font-size: 12.5px !important; font-weight: 600 !important; color: var(--text-tertiary) !important; }
+
+.btn-add-square {
+  width: 54px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: var(--glow-primary);
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+.btn-add-square svg { width: 20px; height: 20px; }
+.btn-add-square:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-add-square:active { transform: scale(0.97); }
+.btn-add-square:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 3px; }
+
+/* ---------- Filter tabs with count chips ---------- */
+.categories-toolbar { padding-bottom: 0; }
+
+.chip-container { gap: 22px; align-items: center; padding: 4px 2px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.chip:hover { background: transparent; color: var(--text-primary); }
+.chip.active { background: transparent; color: var(--text-primary); }
+
+.chip-count {
+  min-width: 36px;
+  height: 30px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(104, 116, 150, 0.12);
+  transition: all var(--transition-fast);
+}
+.chip.active .chip-count {
+  color: var(--on-primary-container);
+  background: var(--primary-container);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 168, 204, 0.10);
+}
+
+.sort-select {
+  background-color: var(--surface);
+  border: none;
+  border-radius: 10px;
+  padding: 9px 16px;
+  box-shadow: 0 4px 12px rgba(104, 116, 150, 0.12);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.sort-select:hover { background-color: var(--surface); border-color: transparent; color: var(--text-primary); }
+
+/* ---------- Card grid ---------- */
+.accounts-grid {
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 52px 28px;
+  padding-top: 30px;
+}
+
+@media (min-width: 1440px) {
+  .accounts-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 56px 30px; }
+}
+
+.account-card-real {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: 28px;
+  padding: 44px 26px 20px;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.account-card-real:hover {
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.account-card-top { align-items: flex-start; }
+.account-card-brand { display: block; width: 100%; }
+
+/* colour badge that straddles the top edge of the card */
+.account-avatar-badge {
+  position: absolute;
+  top: -28px;
+  left: 26px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 21px;
+  font-weight: 700;
+  background: var(--badge-blue);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.35);
+}
+.account-avatar-badge.tone-0 { background: linear-gradient(135deg, #f472b6, var(--badge-pink));   box-shadow: 0 10px 20px rgba(236, 72, 153, 0.35); }
+.account-avatar-badge.tone-1 { background: linear-gradient(135deg, #2dd4bf, var(--badge-teal));   box-shadow: 0 10px 20px rgba(20, 184, 166, 0.35); }
+.account-avatar-badge.tone-2 { background: linear-gradient(135deg, #60a5fa, var(--badge-blue));   box-shadow: 0 10px 20px rgba(59, 130, 246, 0.35); }
+.account-avatar-badge.tone-3 { background: linear-gradient(135deg, #fb923c, var(--badge-orange)); box-shadow: 0 10px 20px rgba(249, 115, 22, 0.35); }
+.account-avatar-badge.tone-4 { background: linear-gradient(135deg, #e0a3f0, var(--badge-violet)); box-shadow: 0 10px 20px rgba(199, 125, 222, 0.35); }
+.account-avatar-badge.tone-5 { background: linear-gradient(135deg, #93c5fd, var(--badge-sky));    box-shadow: 0 10px 20px rgba(96, 165, 250, 0.35); }
+
+.account-card-title-group { gap: 8px; }
+
+.account-card-name {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* category line styled like the "team" meta line in the reference */
+.account-category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  background: transparent;
+  border-radius: 0;
+}
+.account-category-chip::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--text-tertiary);
+  box-shadow: inset 0 0 0 2px var(--surface), inset 0 0 0 6px var(--text-tertiary);
+}
+
+/* username / password block = "Team Member / Progress" row */
+.account-card-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 14px;
+  background: transparent;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding: 16px 0 2px;
+}
+
+.account-field-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.1px;
+  color: var(--text-primary);
+}
+
+.account-field-value {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.account-masked-pass { font-size: 13px; letter-spacing: 2px; color: var(--text-secondary); }
+
+.account-revealed-pass {
+  color: var(--on-primary-container);
+  background: var(--primary-container);
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-size: 12.5px;
+}
+
+.account-card-extra { border-top: 1px dashed var(--border); padding-top: 12px; }
+.account-website-row { font-size: 12px; color: var(--primary); }
+.account-notes-box { background: var(--surface-container); border-radius: 12px; }
+
+/* action bar: compact round icon buttons, labelled Autofill */
+.account-card-action-bar {
+  border-top: none;
+  padding-top: 4px;
+  gap: 10px;
+}
+.account-card-action-group { gap: 8px; }
+
+.btn-card-action {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-container);
+  color: var(--text-secondary);
+}
+.btn-card-action span {
+  position: absolute;
+  width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.btn-card-action:hover {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: none;
+}
+.btn-card-action.active-show { background: var(--primary-container); color: var(--on-primary-container); border: none; }
+.btn-card-action.btn-action-danger { color: var(--danger); }
+.btn-card-action.btn-action-danger:hover { background: var(--danger-container); color: var(--danger); }
+
+.btn-card-action.btn-autofill {
+  width: auto;
+  height: 34px;
+  padding: 0 14px 0 12px;
+  gap: 6px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--glow-primary);
+}
+.btn-card-action.btn-autofill span {
+  position: static; width: auto; height: auto; margin: 0; clip: auto; overflow: visible;
+  font-size: 12px; font-weight: 600;
+}
+.btn-card-action.btn-autofill:hover { background: var(--primary-hover); color: var(--on-primary); filter: none; }
+
+/* tooltips for icon-only buttons */
+.btn-card-action[aria-label]:not(.btn-autofill):hover::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #fff;
+  background: #2b2f3a;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* ---------- Empty states ---------- */
+.empty-state-card {
+  border: none;
+  border-radius: 28px;
+  box-shadow: var(--shadow-card);
+  padding: 72px 24px;
+}
+.empty-icon-shield {
+  background: linear-gradient(135deg, #17c3e3, #0096bf);
+  color: #fff;
+  box-shadow: var(--glow-primary);
+}
+
+/* ---------- Modals / lock screen ---------- */
+.locked-overlay, .modal-backdrop {
+  background-color: rgba(43, 47, 70, 0.45);
+  backdrop-filter: blur(8px);
+}
+.locked-card, .modal-card {
+  border: none;
+  border-radius: 28px;
+  box-shadow: var(--elevation-3);
+}
+.locked-card-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #17c3e3, #0096bf);
+  color: #fff;
+  box-shadow: var(--glow-primary);
+}
+.modal-header { border-bottom: 1px solid var(--border-subtle); }
+.modal-title, .locked-card-title { font-weight: 600; }
+
+.form-input, .form-select {
+  border-radius: 14px;
+  background-color: var(--surface-container);
+  border: 1px solid transparent;
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--primary);
+  background-color: var(--surface);
+  box-shadow: 0 0 0 4px rgba(0, 168, 204, 0.14);
+}
+
+.generator-preview-box, .generator-control-section { border: none; background: var(--surface-container); border-radius: 20px; }
+.generator-preview-input { border: 1px solid var(--border); background: var(--surface); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px) {
+  .app-layout { grid-template-columns: 78px minmax(0, 1fr); }
+  .vault-sidebar { padding: 22px 12px; align-items: center; }
+  .sidebar-brand { padding: 0; }
+  .sidebar-brand .brand-name, .nav-item span { display: none; }
+  .nav-item { justify-content: center; padding: 13px; width: 50px; height: 50px; }
+  .main-content.vault-container { padding: 26px 22px 60px; }
+  .vault-navbar .nav-content { padding: 12px 22px; }
+  .vault-navbar .status-pill { display: none; }
+}
+
+@media (max-width: 560px) {
+  .accounts-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- v2 polish ---------- */
+.accounts-grid { grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+@media (min-width: 1440px) { .accounts-grid { grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); } }
+@media (max-width: 560px) { .accounts-grid { grid-template-columns: 1fr; } }
+
+/* keep dividers aligned across a row; pin actions to the bottom */
+.account-card-real { justify-content: flex-start; }
+.account-card-action-bar { margin-top: auto; flex-wrap: wrap; }
+
+.btn-card-action { width: 32px; height: 32px; }
+.account-card-action-group { gap: 6px; }
+.btn-card-action.btn-autofill { height: 32px; padding: 0 12px 0 10px; }
+
+.account-masked-pass {
+  font-size: 11px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  line-height: 1.7;
+}
+.account-card-body { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+
+/* =====================================================================
+   v3 - compact cards + terminal ("hacker") typography
+   ===================================================================== */
+.accounts-grid { grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 44px 20px; padding-top: 26px; }
+@media (min-width: 1440px) { .accounts-grid { grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); } }
+
+.account-card-real { border-radius: 20px; padding: 34px 18px 14px; gap: 10px; }
+.account-card-real:hover { box-shadow: var(--shadow-card-hover), 0 0 0 1px rgba(0, 168, 204, 0.35); }
+
+.account-avatar-badge {
+  top: -22px; left: 18px; width: 44px; height: 44px; font-size: 17px;
+  font-family: var(--font-hack); font-weight: 800;
+}
+
+.account-card-title-group { gap: 4px; }
+.account-card-name {
+  font-family: var(--font-hack);
+  font-size: 15px; font-weight: 700; letter-spacing: 0.2px;
+  color: var(--text-primary);
+}
+.account-card-name::before { content: "~/"; color: var(--primary); font-weight: 600; margin-right: 2px; }
+
+/* category -> [Other] */
+.account-category-chip {
+  font-family: var(--font-hack); font-size: 11px; font-weight: 600; gap: 0;
+  color: var(--text-tertiary); text-transform: lowercase; letter-spacing: 0.3px;
+}
+.account-category-chip::before { content: "["; width: auto; height: auto; border: 0; box-shadow: none; border-radius: 0; margin-right: 1px; color: var(--primary); }
+.account-category-chip::after  { content: "]"; color: var(--primary); }
+
+.account-card-body { padding: 10px 0 0; gap: 10px; }
+.account-field-label {
+  font-family: var(--font-hack); font-size: 10px; font-weight: 700;
+  text-transform: lowercase; letter-spacing: 0.4px; color: var(--primary);
+}
+.account-field-label::before { content: "> "; opacity: 0.8; }
+.account-field-value { font-family: var(--font-hack); font-size: 11.5px; font-weight: 500; color: var(--text-primary); }
+.account-masked-pass { font-family: var(--font-hack); font-size: 10px; letter-spacing: 1px; color: var(--text-secondary); }
+.account-revealed-pass { font-family: var(--font-hack); font-size: 11.5px; font-weight: 700; letter-spacing: 0.3px; }
+
+.account-card-extra { padding-top: 8px; gap: 5px; }
+.account-website-row, .account-notes-box { font-family: var(--font-hack); font-size: 10.5px; }
+.account-notes-box { padding: 6px 10px; }
+
+.account-card-action-bar { padding-top: 2px; }
+.account-card-action-group { gap: 5px; }
+.btn-card-action { width: 28px; height: 28px; }
+.btn-card-action .icon-svg-sm { width: 13px; height: 13px; }
+.btn-card-action.btn-autofill { height: 28px; padding: 0 10px 0 8px; gap: 5px; }
+.btn-card-action.btn-autofill span { font-family: var(--font-hack); font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px; }
+
+/* terminal-ish page title + tabs */
+.overview-title { font-family: var(--font-hack); font-size: 19px; font-weight: 700; }
+.overview-title::before { content: "$ "; color: var(--primary); }
+.overview-subtitle, .account-count, .chip, .sort-label { font-family: var(--font-hack); }
+.chip { font-size: 12px; }
+
+/* v3.1 - keep action row and revealed passwords on one line */
+.accounts-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+@media (min-width: 1440px) { .accounts-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
+@media (max-width: 560px) { .accounts-grid { grid-template-columns: 1fr; } }
+.account-revealed-pass { font-size: 11px; word-break: break-all; display: inline-block; max-width: 100%; }
+.account-card-body { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+
+/* v3.2 - single-line action row */
+.account-card-action-bar { flex-wrap: nowrap; }
+.account-card-action-group { gap: 4px; flex-wrap: nowrap; }
+.btn-card-action { width: 27px; height: 27px; }
+.btn-card-action.btn-autofill { height: 27px; padding: 0 10px 0 8px; }
+.account-field-value { overflow-wrap: anywhere; }

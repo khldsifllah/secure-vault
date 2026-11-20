@@ -2,6 +2,14 @@
 
 Notable project changes are documented here. This changelog describes the current source baseline; it is not a statement that every browser has completed runtime certification.
 
+## UI redesign
+
+- New light-first design: sidebar navigation, rounded white cards, cyan accent, colour icon badges
+- Category filter tabs now show live account counts
+- Account actions are compact icon buttons with tooltips; Autofill stays labelled
+- Popup restyled to match; dark theme kept (toggle unchanged, default is now light)
+- Compact cards with terminal-style monospace typography (~/name, [category], > labels)
+
 ## [1.0.1] — 2026-10-18 (security and reliability release)
 
 ### Security and reliability fixes

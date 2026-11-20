@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // --- THEME MANAGEMENT ---
   function initTheme() {
-    const savedTheme = localStorage.getItem('secure_vault_theme') || 'dark';
+    const savedTheme = localStorage.getItem('secure_vault_theme') || 'light';
     applyTheme(savedTheme);
   }
 
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
-      const currentTheme = htmlRoot.getAttribute('data-theme') || 'dark';
+      const currentTheme = htmlRoot.getAttribute('data-theme') || 'light';
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       applyTheme(newTheme);
       try {
@@ -425,7 +425,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     cardHeader.className = 'card-header';
 
     const avatar = document.createElement('div');
-    avatar.className = 'card-avatar avatar-blue';
+    {
+      let h = 0;
+      const nm = String(account.name || 'A');
+      for (let i = 0; i < nm.length; i++) h = (h * 31 + nm.charCodeAt(i)) >>> 0;
+      avatar.className = `card-avatar tone-${h % 6}`;
+    }
     avatar.textContent = (account.name || 'A').charAt(0).toUpperCase();
 
     const meta = document.createElement('div');
